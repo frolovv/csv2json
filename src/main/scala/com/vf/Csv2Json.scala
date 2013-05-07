@@ -1,15 +1,17 @@
 package com.vf
 
 import scala.util.parsing.json.{JSONType, JSONArray, JSONObject}
-import java.io.FileWriter
+import java.io.{OutputStreamWriter, FileOutputStream}
+import scala.io.Codec
 
 object Csv2Json {
   def main(args: Array[String]) {
+
     val inputFile = args(0)
     val outputFile = args(1)
     val columns = splitLines(args(2))
 
-    val lines = io.Source.fromFile(inputFile).getLines()
+    val lines = io.Source.fromFile(inputFile)(codec = Codec.UTF8).getLines()
 
     val json = buildJson(lines, columns)
 
@@ -18,7 +20,8 @@ object Csv2Json {
 
 
   def writeTo(path: String, obj: Any) {
-    val out = new FileWriter(path)
+    val fos = new FileOutputStream(path)
+    val out = new OutputStreamWriter(fos, "UTF8")
     out.write(obj.toString)
     out.close()
   }
